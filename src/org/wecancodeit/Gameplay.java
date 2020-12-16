@@ -7,12 +7,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+
 public class Gameplay extends JPanel implements KeyListener, ActionListener {
     private boolean play = false;
     private int score = 0;
     private int totalBricks = 21;
 
-    private Timer time;
+    private Timer timer;
     private int delay = 8;
 
     private int playerX = 310;
@@ -25,9 +26,9 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
     public Gameplay() {
         addKeyListener(this);
         setFocusable(true);
-        setFocusTraversalKeys(false);
-        time = new Time(delay, this);
-        time.start();
+        setFocusTraversalKeysEnabled(false);
+        timer = new Timer(delay, this);
+        timer.start();
     }
 
     public void paint(Graphics g) {
@@ -49,12 +50,32 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 
         // the ball
         g.setColor(Color.green);
-        g.fillRect(ballposX, ballposY, 20, 20);
+        g.fillOval(ballposX, ballposY, 20, 20);
+
+        g.dispose();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        timer.start();
+        if (play) {
+            if (new Rectangle(ballposX, ballposY, 20, 20).intersects
+                    (new Rectangle(playerX, 550, 100, 8))) {
+                ballYdir = -ballYdir;
+            }
+            ballposX += ballXdir;
+            ballposY += ballYdir;
+            if (ballposX < 0) {
+                ballXdir = -ballXdir;
+            }
+            if (ballposY < 0) {
+                ballYdir = -ballYdir;
+            }
+            if (ballposX > 670) {
+                ballXdir = -ballXdir;
+            }
+        }
+        repaint();
     }
 
     @Override
